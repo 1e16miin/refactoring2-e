@@ -1,4 +1,4 @@
-import statement from "../../../main/ch1/BeforeStatement";
+import statement from "../../../main/ch1/statement";
 import invoices from "./invoices.json";
 import plays from "./plays.json";
 
