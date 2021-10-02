@@ -12,13 +12,14 @@ const statement = (invoice, plays) => {
   }).format;
   // console.log(invoice[0].customer);
   for (let perf of invoice.performance) {
-    const play = playFor(perf);
+    // const play = playFor(perf);
     let history = {}
-    let thisAmount = amountFor(perf, play);
+    let thisAmount = amountFor(perf, playFor(perf));
 
     volumeCredits += Math.max(perf.audience - 30, 0);
-    if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
-    history.playID = play.name
+    if ("comedy" === playFor(perf).type)
+      volumeCredits += Math.floor(perf.audience / 5);
+    history.playID = playFor(perf).name;
     history.amount = format(thisAmount / 100);
     history.audience = perf.audience;
 
