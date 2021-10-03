@@ -1,26 +1,19 @@
 const statement = (invoice, plays) => {
-
   let totalAmount = 0;
   let volumeCredits = 0;
-  let result = {}
-  result.customer = invoice.customer; 
+  let result = {};
+  result.customer = invoice.customer;
   let historyList = [];
-  const format = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format;
   // console.log(invoice[0].customer);
   for (let perf of invoice.performance) {
     // const play = playFor(perf);
-    let history = {}
+    let history = {};
     let thisAmount = amountFor(perf, playFor(perf));
 
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    if ("comedy" === playFor(perf).type)
-      volumeCredits += Math.floor(perf.audience / 5);
+    volumeCredits += volumeCreditFor(perf);
+
     history.playID = playFor(perf).name;
-    history.amount = format(thisAmount / 100);
+    history.amount = usd(thisAmount);
     history.audience = perf.audience;
 
     totalAmount += thisAmount;
@@ -28,17 +21,33 @@ const statement = (invoice, plays) => {
   }
 
   result.historyList = historyList;
-  result.totalAmount = format(totalAmount / 100);
+  result.totalAmount = usd(totalAmount);
   result.volumeCredits = volumeCredits;
   return result;
+
+  function usd(aNumber) {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+    }).format(aNumber/100);
+  }
+
+  function volumeCreditFor(perf) {
+    let result = 0;
+    result += Math.max(perf.audience - 30, 0);
+    if ("comedy" === playFor(perf).type)
+      result += Math.floor(perf.audience / 5);
+    return result;
+  }
 
   function playFor(aPerformance) {
     return plays[aPerformance.playID];
   }
 
-  function amountFor(aPerformance, play) {
+  function amountFor(aPerformance) {
     let result = 0;
-    switch (play.type) {
+    switch (playFor(aPerformance).type) {
       case "tragedy":
         result = 40000;
         if (aPerformance.audience > 30) {
@@ -53,11 +62,10 @@ const statement = (invoice, plays) => {
         result += 300 * aPerformance.audience;
         break;
       default:
-        throw new Error(`Invalid Genre: ${play.type}`);
+        throw new Error(`Invalid Genre: ${playFor(aPerformance).type}`);
     }
     return result;
   }
 };
-
 
 export default statement;
