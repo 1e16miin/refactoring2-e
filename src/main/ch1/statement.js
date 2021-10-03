@@ -1,23 +1,32 @@
 const statement = (invoice, plays) => {
-  let totalAmount = 0;
-  let volumeCredits = 0;
   let result = {};
   result.customer = invoice.customer;
   let historyList = [];
-  // console.log(invoice[0].customer);
-  for (let perf of invoice.performance) {
-    historyList.push(historyFor(perf));
-    totalAmount += amountFor(perf);
-  }
 
   for (let perf of invoice.performance) {
-    volumeCredits += volumeCreditFor(perf);
+    historyList.push(historyFor(perf));
   }
 
   result.historyList = historyList;
-  result.totalAmount = usd(totalAmount);
-  result.volumeCredits = volumeCredits;
+  result.totalAmount = usd(totalAmount());
+  result.volumeCredits = totalVolumeCredits();
   return result;
+
+  function totalAmount() {
+    let result = 0;
+    for (let perf of invoice.performance) {
+      result += amountFor(perf);
+    }
+    return result;
+  }
+
+  function totalVolumeCredits() {
+    let result = 0;
+    for (let perf of invoice.performance) {
+      result += volumeCreditFor(perf);
+    }
+    return result;
+  }
 
   function historyFor(aPerformance) {
     let result = {};
