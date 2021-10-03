@@ -6,24 +6,26 @@ const statement = (invoice, plays) => {
   let historyList = [];
   // console.log(invoice[0].customer);
   for (let perf of invoice.performance) {
-    // const play = playFor(perf);
-    let history = {};
-    let thisAmount = amountFor(perf, playFor(perf));
+    historyList.push(historyFor(perf));
+    totalAmount += amountFor(perf);
+  }
 
+  for (let perf of invoice.performance) {
     volumeCredits += volumeCreditFor(perf);
-
-    history.playID = playFor(perf).name;
-    history.amount = usd(thisAmount);
-    history.audience = perf.audience;
-
-    totalAmount += thisAmount;
-    historyList.push(history);
   }
 
   result.historyList = historyList;
   result.totalAmount = usd(totalAmount);
   result.volumeCredits = volumeCredits;
   return result;
+
+  function historyFor(aPerformance) {
+    let result = {};
+    result.playID = playFor(aPerformance).name;
+    result.amount = usd(amountFor(aPerformance));
+    result.audience = aPerformance.audience;
+    return result;
+  }
 
   function usd(aNumber) {
     return new Intl.NumberFormat("en-US", {
@@ -33,11 +35,11 @@ const statement = (invoice, plays) => {
     }).format(aNumber/100);
   }
 
-  function volumeCreditFor(perf) {
+  function volumeCreditFor(aPerformance) {
     let result = 0;
-    result += Math.max(perf.audience - 30, 0);
-    if ("comedy" === playFor(perf).type)
-      result += Math.floor(perf.audience / 5);
+    result += Math.max(aPerformance.audience - 30, 0);
+    if ("comedy" === playFor(aPerformance).type)
+      result += Math.floor(aPerformance.audience / 5);
     return result;
   }
 
