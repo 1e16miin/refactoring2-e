@@ -4,6 +4,7 @@ const statement = (invoice, plays) => {
   return renderPlainText(createStatementData(invoice, plays));
 };
 
+
 const renderPlainText = (data) => {
   let result = {};
   result.customer = data.customer;
@@ -17,24 +18,23 @@ const renderPlainText = (data) => {
   result.totalAmount = usd(data.totalAmount);
   result.volumeCredits = data.totalVolumeCredits;
   return result;
-
-  
-
-  function historyFor(aPerformance) {
-    let result = {};
-    result.playID = aPerformance.play.name;
-    result.amount = usd(aPerformance.amount);
-    result.audience = aPerformance.audience;
-    return result;
-  }
-
-  function usd(aNumber) {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(aNumber / 100);
-  }  
 };
+
+
+function historyFor(aPerformance) {
+  let result = {};
+  result.playID = aPerformance.play.name;
+  result.amount = usd(aPerformance.amount);
+  result.audience = aPerformance.audience;
+  return result;
+}
+
+function usd(aNumber) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(aNumber / 100);
+}
 
 export default statement;
