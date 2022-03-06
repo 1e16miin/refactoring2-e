@@ -1,4 +1,4 @@
-sampleProvinceData = () => {
+const sampleProvinceData = () => {
   return {
     name: "Asia",
     producers: [
