@@ -22,4 +22,4 @@ const sampleProvinceData = () => {
 }
 
 
-module.exports = { sampleProvinceData };
+export default sampleProvinceData;
